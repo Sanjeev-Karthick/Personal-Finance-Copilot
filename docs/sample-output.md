@@ -4,6 +4,8 @@ Figures are **not** live market data. They show the product shape after Friday *
 
 The analysis is written by an LLM **only from stored bars, fundamentals, scores, filings, and your positions**. It does not place orders.
 
+For **NSE/BSE long-term**, the product also takes **ticker + investment horizon** and renders the 8-tab fundamental widget (View default). Spec: [indian-stock-fundamental-analyser.md](./indian-stock-fundamental-analyser.md). That report is a VIEW with citations — not a buy/sell. The INFY write-up below is a short copilot note; the widget is the full long-term artefact.
+
 ---
 
 ## Input
@@ -92,9 +94,30 @@ NSE announcement: “board to consider fundraising; no terms disclosed.”
 
 ---
 
+## Output — Indian fundamental analyser (long-term)
+
+**Input:** ticker `INFY` · horizon `5 years` (both required; no report until both exist).
+
+**Output:** HTML widget from [`templates/indian-fundamental-report.html`](./templates/indian-fundamental-report.html), **View tab open first**.
+
+| Tab | What you see |
+| --- | --- |
+| Snapshot | Company, sector, CMP / 52W / mcap / face value, flags (e.g. pledging) |
+| Valuation | P/E, P/B, EV/EBITDA vs sector and 5Y own avg → CHEAP / FAIR / EXPENSIVE |
+| Growth | 3Y/5Y CAGRs, 8-quarter EPS, ACCELERATING / STEADY / SLOWING / DECLINING |
+| Health | D/E, coverage, current ratio, FCF + bear/base/bull **CAGR scenarios for 5 years** (not a price target) |
+| Returns | ROE / ROCE / dividend |
+| Peers | 3 competitors + 5 long-term news items |
+| Ownership | Promoter / FII / DII / pledge + earnings-call notes |
+| **View** | STRONG / MODERATE / WEAK, 3 strengths, 2 watches, 1 thing to track |
+
+Every cell cites NSE, BSE, Screener.in, etc., or shows `DATA UNAVAILABLE`. Confidence bar: HIGH / MODERATE / LOW / VERY LOW. **No buy, sell, or target price.**
+
+The INFY prose below is the copilot’s short cross-bucket note (includes swing). The widget is the full long-term artefact.
+
 ## Output — stock analysis (dashboard ticker page)
 
-This is the extra layer: a readable note per name, not only a score.
+This is the extra layer: a readable note per name, not only a score. NSE long-term still uses the widget above as the source of truth.
 
 ### INFY (NSE) — as of 14 Aug 2026
 
@@ -118,7 +141,7 @@ IT spending cycle; INR/USD translation; a failed swing if volume was a one-day b
 **Implied action (not an order)**  
 | Bucket | Bias | Note |
 | --- | --- | --- |
-| Long-term | Hold / add on weakness | Thesis intact; 1,350 stop already set |
+| Long-term | See analyser VIEW | 5-year horizon widget; not a buy/sell |
 | Swing | Setup, optional | Only with a ~1,572 invalidation and size that does not collide with the long-term lot |
 | Penny | n/a | |
 
