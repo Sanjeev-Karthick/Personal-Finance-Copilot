@@ -29,7 +29,7 @@ You or Claude in Cursor can do this today. No Lambda, no Cockroach, no CloudFron
 - Groww MCP: stocks/F&O first; MFs/IPOs may be `DATA UNAVAILABLE`.
 - Two brokers in two MCP servers: merge quality depends on the model that day unless you persist ISIN rows.
 
-If that list does not hurt yet, **stay on Claude + MCP**. Treat this repo as prompts + rules, not infra.
+If that list does not hurt yet, **stay on Claude + MCP**. Treat this repo as prompts + rules, not infra. Features to layer on the agent without AWS: [agent-addons.md](./agent-addons.md).
 
 ---
 

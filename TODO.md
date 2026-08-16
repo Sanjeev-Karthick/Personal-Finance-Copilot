@@ -14,7 +14,7 @@ This document is the sequenced **standalone AWS** plan. **Most of the product do
 
 Required so the GitHub description matches a real, reproducible codebase.
 
-- [ ] Decision doc: Claude+MCP vs standalone (`docs/standalone-vs-mcp.md`) — default Stage A until schedule/history/alerts hurt
+- [ ] Agent add-on backlog (`docs/agent-addons.md`) — features on top of Kite MCP, still Claude-first
 - [ ] README: Claude-first vs optional AWS; three buckets; links to specs
 - [ ] Sample output doc (`docs/sample-output.md`) kept in sync with the product shape
 - [ ] Indian long-term analyser spec (`docs/indian-stock-fundamental-analyser.md`) + HTML widget template

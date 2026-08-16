@@ -28,7 +28,7 @@ NSE/BSE and US, one normalized schema tagged by market and currency, with native
 
 **Standalone (only for unattended work).** Scheduler, score history, push alerts, US/news ingest, deterministic RSI/scorecard, `/analyse` and `/portfolio` URLs. Do not build this until chat is a habit and those gaps hurt. Details: [docs/standalone-vs-mcp.md](./docs/standalone-vs-mcp.md).
 
-Other docs: [TODO.md](./TODO.md) · [docs/sample-output.md](./docs/sample-output.md) · [docs/indian-stock-fundamental-analyser.md](./docs/indian-stock-fundamental-analyser.md) · [docs/portfolio-analysis.md](./docs/portfolio-analysis.md).
+Other docs: [TODO.md](./TODO.md) · [docs/sample-output.md](./docs/sample-output.md) · [docs/indian-stock-fundamental-analyser.md](./docs/indian-stock-fundamental-analyser.md) · [docs/portfolio-analysis.md](./docs/portfolio-analysis.md) · [docs/standalone-vs-mcp.md](./docs/standalone-vs-mcp.md) · [docs/agent-addons.md](./docs/agent-addons.md) (features on top of Kite MCP).
 
 ## What you see
 
