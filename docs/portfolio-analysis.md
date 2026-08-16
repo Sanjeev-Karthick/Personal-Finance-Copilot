@@ -2,7 +2,9 @@
 
 A **separate dashboard route** from the Indian fundamental analyser. That page is “one ticker + horizon → VIEW.” This page is “**your actual books** at Zerodha Kite and Groww → combined portfolio VIEW.”
 
-**Do not implement until a later task kicks this off.** Planning only. **Read-only.** This page must not place, modify, or cancel orders even if a self-hosted MCP exposes those tools.
+**Do not implement a web page until chat is not enough.** Planning only for the *platform* version. **Read-only.** Must not place, modify, or cancel orders even if a self-hosted MCP exposes those tools.
+
+**Claude-first:** connecting Kite + Groww MCP in Claude/Cursor *is* the portfolio analyser. A standalone `/portfolio` URL is only for persistence, merge-by-ISIN you can trust every day, and snapshots. Decision: [standalone-vs-mcp.md](./standalone-vs-mcp.md).
 
 ---
 
@@ -84,7 +86,11 @@ Refresh: on-demand button + optional daily pull after NSE close (same EventBridg
 ## Operating rules
 
 - Personal use only; tokens never in git or the SPA.  
-- Do not treat MCP chat in Cursor as a substitute for this page; the page is the durable UI.  
+- Do not treat MCP chat in Cursor as a substitute for this page **once you have chosen Stage C**; until then, **chat is the product**.
+- Prefer sending **aggregated** holdings stats to the LLM, not the full book, when a platform VIEW exists (privacy + tokens).
+- GTT on Kite ≠ stop recorded in our ledger — flag both; do not assume they match.
+- Partial failure: one MCP 401 must not blank the other broker’s column.
+- IST close vs US holdings: MTM timestamp per row.  
 - Groww MCP currently emphasizes stocks and F&O; if MFs are unavailable, say so — do not invent NAVs.  
 - Combined totals must **not** double-count an ISIN held at both brokers.  
 - This page does not replace `/analyse`. A holding can deep-link to `/analyse?ticker=INFY&horizon=5`.

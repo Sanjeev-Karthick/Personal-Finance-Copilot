@@ -1,8 +1,8 @@
 # Sample output (illustrative)
 
-Figures are **not** live market data. They show the product shape after Friday **14 Aug 2026** close: inputs → scores → **stock analysis** → ledger → digest → optional urgent alert.
+Figures are **not** live market data. They show the product shape after Friday **14 Aug 2026** close.
 
-The analysis is written by an LLM **only from stored bars, fundamentals, scores, filings, and your positions**. It does not place orders.
+**In Claude + MCP** you get the analyser artefact and a Kite/Groww portfolio VIEW on demand. **Platform samples** below (scores, digest, SNS, `/portfolio` table) are what you add only if you outgrow chat. Decision: [standalone-vs-mcp.md](./standalone-vs-mcp.md).
 
 For **NSE/BSE long-term**, the product also takes **ticker + investment horizon** and renders the 8-tab fundamental widget (View default). Spec: [indian-stock-fundamental-analyser.md](./indian-stock-fundamental-analyser.md). That report is a VIEW with citations — not a buy/sell. The INFY write-up below is a short copilot note; the widget is the full long-term artefact.
 

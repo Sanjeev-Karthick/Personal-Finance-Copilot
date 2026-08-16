@@ -2,9 +2,11 @@
 
 A personal AI co-pilot for **long-term investing**, **swing trading**, and **penny/high-growth** plays across **India (NSE/BSE)** and **US** markets.
 
-This document is the sequenced build plan. **Do not start implementation from this file until a later task explicitly kicks off a phase.** Checkboxes are the source of truth for what is in vs. out of scope.
+This document is the sequenced **standalone AWS** plan. **Most of the product does not need this.** Interactive analysis and Kite/Groww books are Claude + MCP — see [docs/standalone-vs-mcp.md](./docs/standalone-vs-mcp.md).
 
-**Sequence rule:** ship long-term + swing end-to-end first (shared indicators, lower operational risk). Add the penny/high-growth bucket last, after position caps, stop-loss enforcement, and catalyst-decay checks are solid.
+**Do not start AWS implementation from this file until a later task explicitly kicks off a phase *and* you have outgrown chat** (need schedule, history, or push alerts). Checkboxes are the source of truth for platform scope.
+
+**Sequence rule:** Claude-native first. If you build the platform, ship long-term + swing end-to-end before penny/high-growth.
 
 ---
 
@@ -12,7 +14,8 @@ This document is the sequenced build plan. **Do not start implementation from th
 
 Required so the GitHub description matches a real, reproducible codebase.
 
-- [ ] README: purpose, three strategy buckets, India + US markets, high-level architecture (ingestion → SQS → DB → scoring → **stock analysis** → digest/alerts → dashboard)
+- [ ] Decision doc: Claude+MCP vs standalone (`docs/standalone-vs-mcp.md`) — default Stage A until schedule/history/alerts hurt
+- [ ] README: Claude-first vs optional AWS; three buckets; links to specs
 - [ ] Sample output doc (`docs/sample-output.md`) kept in sync with the product shape
 - [ ] Indian long-term analyser spec (`docs/indian-stock-fundamental-analyser.md`) + HTML widget template
 - [ ] Portfolio analysis page spec (`docs/portfolio-analysis.md`) — separate route, Kite + Groww MCP read-only
@@ -160,7 +163,7 @@ A single-page app (React, hosted on S3 + CloudFront, or just Amplify Hosting for
 
 Ship long-term + swing buckets first since they share indicator logic and carry lower operational risk — get the data pipeline, DB, scoring, and one alert channel working end-to-end for those two before adding anything else. Add the penny/high-growth bucket last, once the guardrail logic (position caps, stop-loss enforcement, catalyst-decay checks) is solid, since that bucket does the most damage if it's half-built.
 
-Recommended order:
+Recommended order **if building the platform** (after Stage A in `docs/standalone-vs-mcp.md`):
 
 1. Phase 0 scaffolding (docs + layout only when implementation starts)
 2. Phase 1 AWS foundation (IaC)

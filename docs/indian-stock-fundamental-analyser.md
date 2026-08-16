@@ -2,7 +2,9 @@
 
 On-demand **long-term** report for **NSE/BSE** names. The user supplies a **ticker** and an **investment horizon**. The product returns a VIEW (not a buy/sell), in the same 8-tab widget as the Claude artefact: Snapshot, Valuation, Growth, Health, Returns, Peers, Ownership, **View** (default tab on load).
 
-This is the long-term analysis UX. Swing and penny buckets stay on their own engines. A US analogue is later work.
+**Run this in Claude first.** It is a prompt + HTML artefact, not an AWS feature. A hosted `/analyse` page is only needed if you want the same widget without opening Claude. See [standalone-vs-mcp.md](./standalone-vs-mcp.md).
+
+This is the long-term analysis UX. Swing and penny stay on other engines (and those *do* need code/schedule if you want them unattended). A US analogue is later work.
 
 **Spec files**
 - Operating rules and steps: this document
@@ -102,12 +104,13 @@ Fill [`templates/indian-fundamental-report.html`](./templates/indian-fundamental
 
 ## How this fits the copilot
 
-| Copilot piece | Role |
+| Piece | Role |
 | --- | --- |
-| API / dashboard | `ticker` + `horizon_years` → HTML widget + structured JSON |
-| Ingestion / DB | Store metrics and **source URLs** so the widget can cite; weekly refresh for the long-term universe |
-| Long-term score | Can consume valuation / growth / health / returns / ownership classifications |
-| Digest | Link or embed the View tab summary for held or watchlist Indian names |
+| **Claude (default)** | This entire spec as a prompt; artefact HTML; web search for metrics |
+| API / dashboard (later) | Same widget when you want a URL |
+| Ingestion / DB (later) | Citations + weekly refresh so you are not searching from scratch |
+| Long-term score (later) | Code consumes CHEAP/FAIR/… classifications |
+| Digest (later) | View one-liner without opening Claude |
 | Swing / penny | Do **not** use this widget as their primary output |
 
-Claude.ai artefact rules (raw HTML in chat) apply if this prompt is run in Claude. In AWS the **same HTML** is hosted inside the React dashboard (inner HTML or iframe), still with View as the default tab.
+Claude.ai artefact rules (raw HTML in chat) apply in Claude. A future SPA can host the **same HTML**, View tab default.

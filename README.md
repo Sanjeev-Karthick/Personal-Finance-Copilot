@@ -2,9 +2,11 @@
 
 A personal AI co-pilot for **long-term investing**, **swing trading**, and **penny/high-growth** plays across **India** and **US** markets.
 
-The stack is an AWS pipeline (Lambda, CockroachDB or Aurora, SQS/SNS) feeding three scoring engines (fundamentals, technicals, catalyst detection), an **Indian stock fundamental analyser** (ticker + investment horizon), a **separate portfolio page** fed by **Kite and Groww MCP** (read-only holdings), a positions ledger with P&L per strategy, and a daily digest with urgent alerts.
+**Interactive core:** Claude (or Cursor) + **Kite MCP** + **Groww MCP** + the Indian fundamental-analyser prompt. That is enough for ticker VIEWs and live books.
 
-**Build status:** planning only. Sequenced work: [TODO.md](./TODO.md). Samples: [docs/sample-output.md](./docs/sample-output.md). Long-term widget: [docs/indian-stock-fundamental-analyser.md](./docs/indian-stock-fundamental-analyser.md). Portfolio page: [docs/portfolio-analysis.md](./docs/portfolio-analysis.md). Implementation has not started.
+**Optional later:** an AWS pipeline (scheduler, DB, scoring engines, digest, `/analyse` + `/portfolio` pages) for work that must happen when you are not in a chat.
+
+**Build status:** planning only. **Default is Claude + MCP, not AWS.** When a standalone platform is actually required: [docs/standalone-vs-mcp.md](./docs/standalone-vs-mcp.md). AWS checklist if you outgrow chat: [TODO.md](./TODO.md).
 
 ## Buckets
 
@@ -20,8 +22,18 @@ Penny/high-growth waits until position caps, stop-loss enforcement, and catalyst
 
 NSE/BSE and US, one normalized schema tagged by market and currency, with native plus converted P&L.
 
+## Two ways to run this
+
+**Claude + MCP (enough for analysis and books).** Connect `https://mcp.kite.trade/mcp` and `https://mcp.groww.in/mcp`, use the Indian analyser spec as the prompt, ask for a combined portfolio VIEW. No platform required.
+
+**Standalone (only for unattended work).** Scheduler, score history, push alerts, US/news ingest, deterministic RSI/scorecard, `/analyse` and `/portfolio` URLs. Do not build this until chat is a habit and those gaps hurt. Details: [docs/standalone-vs-mcp.md](./docs/standalone-vs-mcp.md).
+
+Other docs: [TODO.md](./TODO.md) · [docs/sample-output.md](./docs/sample-output.md) · [docs/indian-stock-fundamental-analyser.md](./docs/indian-stock-fundamental-analyser.md) · [docs/portfolio-analysis.md](./docs/portfolio-analysis.md).
+
 ## What you see
 
-Scores per bucket, an **Indian long-term fundamental report** on `/analyse` (ticker + years → **View**), a **separate `/portfolio` page** that pulls **Kite + Groww** books via MCP and combines them (P&L, overlap, risk flags), a daily digest, and urgent alerts when a stop or held penny blows up.
+In **Claude:** 8-tab analyser artefact + a portfolio VIEW from MCP.
 
-No buy/sell/target prices on either page. The analyser and portfolio VIEW are not order tickets. The portfolio page never places trades through MCP.
+On a **platform (later):** `/analyse` and a **separate** `/portfolio` page, digest, urgent alerts.
+
+No buy/sell/target. Hosted Kite MCP does not place orders; neither should chat nor a future page.
