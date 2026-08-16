@@ -12,7 +12,8 @@ This document is the sequenced build plan. **Do not start implementation from th
 
 Required so the GitHub description matches a real, reproducible codebase.
 
-- [ ] README: purpose, three strategy buckets, India + US markets, high-level architecture (ingestion → SQS → DB → scoring → digest/alerts → dashboard)
+- [ ] README: purpose, three strategy buckets, India + US markets, high-level architecture (ingestion → SQS → DB → scoring → **stock analysis** → digest/alerts → dashboard)
+- [ ] Sample output doc (`docs/sample-output.md`) kept in sync with the product shape
 - [ ] `.gitignore` for Terraform/CDK, Python, Node, env files, and local secrets
 - [ ] Choose IaC (Terraform **or** CDK) and app language(s); document the choice
 - [ ] Repo layout: `infra/`, `services/` (ingest, score, portfolio, digest, api), `dashboard/`, `shared/` (schema, types)
@@ -64,6 +65,7 @@ Run CockroachDB Serverless (free tier is enough for personal use) or Aurora Serv
   - [ ] `scores` — per bucket: long-term / swing / penny-growth
   - [ ] `positions` — actual holdings tagged by bucket + market
   - [ ] `alerts_log`
+  - [ ] `analyses` — per-ticker write-up (as-of date, buckets covered, thesis, risks, implied action)
 - [ ] Supporting tables as needed: `fx_rates`, `trades` (buy/sell ledger), `digests`, `news_filings` (for catalysts)
 - [ ] Connection via Secrets Manager; no public DB if avoidable
 
@@ -79,6 +81,10 @@ Three Lambda functions (or one Fargate task with three modes), each reading the 
 - [ ] Long-term engine: fundamental scorecard, **weekly**
 - [ ] Swing engine: RSI / MACD / volume / ATR, **daily**
 - [ ] Write scores to `scores` with bucket, as-of date, and explanation fields
+- [ ] Per-ticker **stock analysis** after scoring: LLM (Bedrock or Anthropic) grounded only in stored prices, fundamentals, scores, news/filings, and positions — not free-form web chat
+  - [ ] Sections: business/quality, valuation, technicals, catalyst (if any), risks, implied action per bucket
+  - [ ] Persist to `analyses`; never invent numbers that are not in the DB
+  - [ ] First slice: analysis for long-term + swing names that cleared a score threshold or that you already hold
 - [ ] Penny-growth engine (**last**): volume-surge + catalyst detection (Bedrock or Anthropic) on fresh news/filings, **daily**, tighter thresholds
 - [ ] News/filings ingest for penny bucket (e.g. NSE announcements, SEC EDGAR / 8-K style filings)
 - [ ] Catalyst-decay checks (stale catalysts stop scoring as “fresh”)
@@ -105,6 +111,7 @@ After the scoring jobs run, a Lambda calls the Anthropic API (or Bedrock) to gen
 
 - [ ] Orchestrate: scoring complete → digest Lambda (EventBridge / Step Functions)
 - [ ] LLM daily brief (Anthropic or Bedrock) across buckets that are live
+- [ ] Digest includes links/snippets of that day’s stock analyses (not scores alone)
 - [ ] Delivery: SES **or** Telegram bot webhook
 - [ ] Persist digest text (S3 and/or `digests` table) for the dashboard
 - [ ] SNS urgent path, **not** gated on the nightly digest:
@@ -121,7 +128,7 @@ After the scoring jobs run, a Lambda calls the Anthropic API (or Bedrock) to gen
 A single-page app (React, hosted on S3 + CloudFront, or just Amplify Hosting for simplicity) that reads from a small API Gateway + Lambda layer over your database. Show current scores per bucket, open positions with P&L, and the latest digest. Skip auth complexity since it's personal — just keep the CloudFront distribution private via a signed URL or IP allowlist.
 
 - [ ] Read API (API Gateway + Lambda) over the database
-- [ ] React SPA: scores per bucket, open positions + P&L, latest digest
+- [ ] React SPA: scores per bucket, **stock analysis** for a selected ticker, open positions + P&L, latest digest
 - [ ] Host: S3 + CloudFront **or** Amplify Hosting
 - [ ] Personal access only: signed URL **or** IP allowlist (no full auth stack)
 
@@ -140,7 +147,7 @@ Recommended order:
 5. Phase 4 long-term (weekly) + swing (daily) scorers
 6. Phase 5 positions + P&L + risk flags (caps + stop-loss) — **required before penny**
 7. Phase 6 one digest/alert channel for those two buckets
-8. Phase 7 minimal dashboard for scores, positions, digest
+8. Phase 7 minimal dashboard for scores, stock analysis, positions, digest
 9. **Then** penny/high-growth: ingest catalysts, scorer, tighter thresholds, SNS urgent alerts, exposure caps, catalyst-decay
 
 ---
@@ -152,6 +159,7 @@ Done when all of the following are true:
 - [ ] Daily (and weekly long-term) jobs run from EventBridge without manual invoke
 - [ ] Normalized prices/fundamentals land in the DB, tagged by market/currency
 - [ ] Long-term and swing scores are written for the watchlist
+- [ ] At least one per-ticker stock analysis is generated from those scores + fundamentals
 - [ ] At least one position can be logged and P&L shown (native + converted)
 - [ ] One digest or alert channel fires after scoring
 - [ ] Stack is fully described in IaC and can be destroyed/recreated
