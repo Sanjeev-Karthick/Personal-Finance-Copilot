@@ -15,6 +15,7 @@ Required so the GitHub description matches a real, reproducible codebase.
 - [ ] README: purpose, three strategy buckets, India + US markets, high-level architecture (ingestion → SQS → DB → scoring → **stock analysis** → digest/alerts → dashboard)
 - [ ] Sample output doc (`docs/sample-output.md`) kept in sync with the product shape
 - [ ] Indian long-term analyser spec (`docs/indian-stock-fundamental-analyser.md`) + HTML widget template
+- [ ] Portfolio analysis page spec (`docs/portfolio-analysis.md`) — separate route, Kite + Groww MCP read-only
 - [ ] `.gitignore` for Terraform/CDK, Python, Node, env files, and local secrets
 - [ ] Choose IaC (Terraform **or** CDK) and app language(s); document the choice
 - [ ] Repo layout: `infra/`, `services/` (ingest, score, portfolio, digest, api), `dashboard/`, `shared/` (schema, types)
@@ -30,7 +31,7 @@ Create a dedicated AWS account or use a separate IAM boundary from work. Set up 
 
 - [ ] Dedicated AWS account **or** hard IAM boundary (separate from work)
 - [ ] IaC bootstrap (state backend, lock, environments: `dev` / optional `prod`)
-- [ ] Secrets Manager: Kite Connect, Alpha Vantage and/or Polygon, NSEpy/NSE-related creds, Anthropic or Bedrock, Telegram bot token (if used), SES/SMTP as needed
+- [ ] Secrets Manager: Kite Connect, Groww (if not solely OAuth via hosted MCP), Alpha Vantage and/or Polygon, NSEpy/NSE-related creds, Anthropic or Bedrock, Telegram bot token (if used), SES/SMTP as needed
 - [ ] S3: raw OHLCV/fundamentals dumps, job logs, digest archives
 - [ ] CloudWatch: log groups, metric filters, alarms for failed schedules and Lambda errors
 - [ ] Least-privilege IAM roles per Lambda/Fargate task (no shared admin role)
@@ -113,6 +114,12 @@ A small Lambda or API endpoint (API Gateway + Lambda) that lets you log buys/sel
   - [ ] Flag position missing stop-loss
   - [ ] Other personal caps (per-name, per-market) as you define them
 - [ ] Optional later: sync fills from Kite Connect vs manual ledger (do not block the first E2E)
+- [ ] **`/portfolio` page** (separate from `/analyse`): live books via **Kite MCP** + **Groww MCP** — spec `docs/portfolio-analysis.md`
+  - [ ] Hosted read endpoints: `https://mcp.kite.trade/mcp`, `https://mcp.groww.in/mcp` (or equivalent Kite Connect / Groww APIs server-side)
+  - [ ] Read-only: holdings, positions, margins, MF holdings (Kite), LTP; **never** place/modify/cancel orders from this page
+  - [ ] Combined ISIN view, broker split, overlap, allocation, bucket P&L, cap / missing-stop flags, ledger reconcile
+  - [ ] VIEW paragraph grounded in broker payloads only; DATA UNAVAILABLE if a broker is down
+  - [ ] Snapshot table `portfolio_snapshots` for digest vs yesterday
 
 ---
 
@@ -139,7 +146,10 @@ After the scoring jobs run, a Lambda calls the Anthropic API (or Bedrock) to gen
 A single-page app (React, hosted on S3 + CloudFront, or just Amplify Hosting for simplicity) that reads from a small API Gateway + Lambda layer over your database. Show current scores per bucket, open positions with P&L, and the latest digest. Skip auth complexity since it's personal — just keep the CloudFront distribution private via a signed URL or IP allowlist.
 
 - [ ] Read API (API Gateway + Lambda) over the database
-- [ ] React SPA: scores per bucket, **Indian fundamental analyser** (ticker + horizon → 8-tab widget, View default), swing/penny notes, open positions + P&L, latest digest
+- [ ] React SPA **two pages**:
+  - [ ] `/analyse` — Indian fundamental analyser (ticker + horizon → 8-tab widget, View default)
+  - [ ] `/portfolio` — Kite + Groww combined books (MCP/API), P&L, overlap, risk flags, VIEW
+- [ ] Shared chrome: scores / digest links; do not dump both UIs on one screen
 - [ ] Host: S3 + CloudFront **or** Amplify Hosting
 - [ ] Personal access only: signed URL **or** IP allowlist (no full auth stack)
 
@@ -158,7 +168,7 @@ Recommended order:
 5. Phase 4 long-term Indian analyser (ticker + horizon widget) + swing (daily) scorers
 6. Phase 5 positions + P&L + risk flags (caps + stop-loss) — **required before penny**
 7. Phase 6 one digest/alert channel for those two buckets
-8. Phase 7 minimal dashboard for scores, Indian fundamental widget, positions, digest
+8. Phase 7 dashboard: `/analyse` widget + **`/portfolio` (Kite + Groww MCP)** + digest
 9. **Then** penny/high-growth: ingest catalysts, scorer, tighter thresholds, SNS urgent alerts, exposure caps, catalyst-decay
 
 ---
@@ -173,4 +183,4 @@ Done when all of the following are true:
 - [ ] At least one NSE/BSE name produces the 8-tab fundamental report from ticker + horizon (View tab default, citations or DATA UNAVAILABLE)
 - [ ] At least one position can be logged and P&L shown (native + converted)
 - [ ] One digest or alert channel fires after scoring
-- [ ] Stack is fully described in IaC and can be destroyed/recreated
+- [ ] `/portfolio` can show Kite and/or Groww holdings (read-only MCP/API) without mixing that UI into `/analyse`

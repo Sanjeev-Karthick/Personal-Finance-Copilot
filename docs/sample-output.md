@@ -195,7 +195,22 @@ Penny: **do not add**. First jobs: set a stop or cut to the 10% cap. Score **44*
 
 ---
 
-## Output — positions + P&L
+## Output — `/portfolio` page (Kite + Groww MCP)
+
+Separate URL from `/analyse`. Illustrative books after 14 Aug 2026 close. Sources: Kite `get_holdings` / `get_positions` / `get_gtts`, Groww holdings + positions. Read-only.
+
+**Connection:** Kite connected · Groww connected · last sync 15:45 IST.
+
+| ISIN / ticker | Kite qty @ avg | Groww qty @ avg | Last | Combined P&L | Weight | Bucket | Flags |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| INFY | 40 @ 1,480 | — | 1,638 | +6,320 INR | 41% | long-term | GTT 1,350 |
+| HDFCBANK | 10 @ 1,620 | 5 @ 1,640 | 1,655 | +450 INR | 22% | long-term | **overlap both brokers** |
+| XYZ | — | 2,000 @ 18.40 | 21.10 | +5,400 INR | 12% | penny | **no GTT**, **over cap** |
+
+**Broker split:** Kite 63% · Groww 37% of equity MTM.  
+**VIEW:** Combined book is equity-heavy in two large-caps; HDFCBANK is split across brokers (do not double-count). Penny XYZ is only on Groww and still has no stop. Not a recommendation. Deep-link INFY → `/analyse?ticker=INFY&horizon=5`.
+
+Full spec: [portfolio-analysis.md](./portfolio-analysis.md).
 
 | Bucket | Name | Qty | Avg | Last | P&L native | P&L USD | Stop | Flags |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
