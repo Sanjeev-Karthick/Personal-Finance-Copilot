@@ -70,6 +70,7 @@ Run CockroachDB Serverless (free tier is enough for personal use) or Aurora Serv
   - [ ] `alerts_log`
   - [ ] `analyses` — per-ticker write-up (as-of date, buckets covered, thesis, risks, implied action)
   - [ ] `fundamental_reports` — Indian analyser JSON (ticker, horizon, citations, confidence, HTML or fragment id)
+  - [ ] `portfolio_snapshots` — combined Kite + Groww books as-of (ISIN, broker qtys, MTM)
 - [ ] Supporting tables as needed: `fx_rates`, `trades` (buy/sell ledger), `digests`, `news_filings` (for catalysts)
 - [ ] Connection via Secrets Manager; no public DB if avoidable
 
@@ -184,3 +185,4 @@ Done when all of the following are true:
 - [ ] At least one position can be logged and P&L shown (native + converted)
 - [ ] One digest or alert channel fires after scoring
 - [ ] `/portfolio` can show Kite and/or Groww holdings (read-only MCP/API) without mixing that UI into `/analyse`
+- [ ] Stack is fully described in IaC and can be destroyed/recreated
